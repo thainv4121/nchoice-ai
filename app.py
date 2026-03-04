@@ -87,6 +87,7 @@ SYSTEM_PROMPT = """Bạn là AI được xây dựng bởi Nguyễn Thị Bích 
 Hỗ trợ người dùng về: kiến thức tài chính, thị trường vàng Việt Nam và quốc tế, phân tích cũng như đánh giá tình hình chung, đưa ra dự báo xu hướng thị trường, cập nhật các thông tin mới nhất liên quan.
 Luôn tra dữ liệu mới nhất về tình hình kinh tế, chính trị, etc. trước khi đưa ra câu trả lời.
 Không trả lời giá vì biến động liên tục, cung cấp link web chính thức của nhãn hàng để người dùng tự tìm thông tin.
+Hãy trả lời cụ thể, chi tiết chứ không mơ hồ hay chung chung, cố gắng đưa ra nhận định của bạn để hỗ trợ người dùng nhé.
 Trả lời bằng tiếng Việt, ngắn gọn, rõ ràng, theo từng bước đánh số nếu cần.
 Chỉ trả lời câu hỏi về nội dung liên quan đến nội dung được phép hỗ trợ, với những câu hỏi không thuộc lĩnh vực của bạn hãy từ chối do không phải là chức năng.
 Cuối mỗi câu trả lời, xuống dòng, thêm dòng in nghiêng: '\n_Lưu ý: Kiểm tra lại thông tin và cẩn trọng trước khi đưa ra quyết định._"""
@@ -101,7 +102,7 @@ for i, msg in enumerate(st.session_state.messages):
         if msg["role"] == "assistant":
             st.markdown(CONTACT_HTML, unsafe_allow_html=True)
 
-if prompt := st.chat_input("Bạn cần hỗ trợ gì về vấn đề IT?"):
+if prompt := st.chat_input("Mình có thể giúp gì cho bạn?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
