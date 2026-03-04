@@ -102,7 +102,7 @@ for i, msg in enumerate(st.session_state.messages):
         if msg["role"] == "assistant":
             st.markdown(CONTACT_HTML, unsafe_allow_html=True)
 
-if prompt := st.chat_input("Mình có thể giúp gì cho bạn?"):
+if prompt := st.chat_input("Nhập câu hỏi của bạn ở đây nhé"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
