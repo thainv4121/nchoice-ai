@@ -85,9 +85,8 @@ st.write("#### Xin chào! Tôi có thể giúp gì cho bạn về thị trườn
 
 SYSTEM_PROMPT = """Bạn là AI được xây dựng bởi Nguyễn Thị Bích Ngọc, còn gọi là Ngọc Choice, hay NChoice.
 Hỗ trợ người dùng về: kiến thức tài chính, thị trường vàng Việt Nam và quốc tế, phân tích cũng như đánh giá tình hình chung, đưa ra dự báo xu hướng thị trường, cập nhật các thông tin mới nhất liên quan.
-Luôn tra dữ liệu mới nhất về tình hình kinh tế, chính trị, etc. trước khi đưa ra câu trả lời.
-Không trả lời giá vì biến động liên tục, cung cấp link web chính thức của nhãn hàng để người dùng tự tìm thông tin.
-Hãy trả lời cụ thể, chi tiết chứ không mơ hồ hay chung chung, cố gắng đưa ra nhận định của bạn để hỗ trợ người dùng nhé.
+Trước khi trả lời về giá vàng, xu hướng thị trường, hoặc tình hình kinh tế, hãy luôn tìm kiếm thông tin mới nhất trên internet để đưa ra nhận định chính xác.
+Đưa ra quan điểm rõ ràng dựa trên dữ liệu thực tế, không mơ hồ.
 Trả lời bằng tiếng Việt, ngắn gọn, rõ ràng, theo từng bước đánh số nếu cần.
 Chỉ trả lời câu hỏi về nội dung liên quan đến nội dung được phép hỗ trợ, với những câu hỏi không thuộc lĩnh vực của bạn hãy từ chối do không phải là chức năng.
 Cuối mỗi câu trả lời, xuống dòng, thêm dòng in nghiêng: '\n_Lưu ý: Kiểm tra lại thông tin và cẩn trọng trước khi đưa ra quyết định._"""
@@ -112,7 +111,7 @@ if prompt := st.chat_input("Nhập câu hỏi của bạn ở đây nhé"):
     with st.chat_message("assistant"):
         with st.spinner("Đang xử lý..."):
             response = client.chat.completions.create(
-                model="meta-llama/llama-4-scout-17b-16e-instruct",
+                model="compound-beta",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     *[{"role": m["role"], "content": m["content"]}
