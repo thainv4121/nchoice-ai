@@ -112,7 +112,7 @@ if prompt := st.chat_input("Nhập câu hỏi của bạn ở đây nhé"):
     with st.chat_message("assistant"):
         with st.spinner("Đang xử lý..."):
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     *[{"role": m["role"], "content": m["content"]}
