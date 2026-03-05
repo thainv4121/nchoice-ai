@@ -1,5 +1,6 @@
 import streamlit as st
 from groq import Groq
+import time
 
 st.set_page_config(page_title="NChoice AI", page_icon="💬", layout="centered")
 
@@ -108,19 +109,49 @@ if prompt := st.chat_input("Nhập câu hỏi của bạn ở đây nhé"):
 
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-    with st.chat_message("assistant"):
-        with st.spinner("Đang xử lý..."):
-            response = client.chat.completions.create(
-                model="compound-beta",
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    *[{"role": m["role"], "content": m["content"]}
-                      for m in st.session_state.messages]
-                ],
-                max_tokens=1024
-            )
-            answer = response.choices[0].message.content
-            st.markdown(answer)
-            st.markdown(CONTACT_HTML, unsafe_allow_html=True)
+    import time
 
-    st.session_state.messages.append({"role": "assistant", "content": answer})
+with st.chat_message("assistant"):
+    with st.spinner("Đang xử lý..."):
+        
+        # Thử compound-beta trước, nếu lỗi fallback sang llama-4
+        max_retries = 3
+        answer = None
+        
+        for attempt in range(max_retries):
+            try:
+                response = client.chat.completions.create(
+                    model="compound-beta",
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        *[{"role": m["role"], "content": m["content"]}
+                          for m in st.session_state.messages]
+                    ],
+                    max_tokens=1024
+                )
+                answer = response.choices[0].message.content
+                break  # Thành công thì thoát vòng lặp
+
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    time.sleep(2)  # Chờ 2 giây rồi thử lại
+                else:
+                    # Sau 3 lần thất bại, dùng model dự phòng
+                    try:
+                        response = client.chat.completions.create(
+                            model="meta-llama/llama-4-scout-17b-16e-instruct",
+                            messages=[
+                                {"role": "system", "content": SYSTEM_PROMPT},
+                                *[{"role": m["role"], "content": m["content"]}
+                                  for m in st.session_state.messages]
+                            ],
+                            max_tokens=1024
+                        )
+                        answer = response.choices[0].message.content
+                    except Exception:
+                        answer = "⚠️ Hệ thống đang bận, vui lòng thử lại sau ít phút."
+
+        st.markdown(answer)
+        st.markdown(CONTACT_HTML, unsafe_allow_html=True)
+
+st.session_state.messages.append({"role": "assistant", "content": answer})
